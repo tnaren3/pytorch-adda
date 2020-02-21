@@ -8,14 +8,14 @@ import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 
 import params
-from datasets import get_mnist, get_usps
+from datasets import get_chexpert, get_nih
 
 
 def make_variable(tensor, volatile=False):
     """Convert Tensor to Variable."""
     if torch.cuda.is_available():
         tensor = tensor.cuda()
-    return Variable(tensor, volatile=volatile)
+    return Variable(tensor)
 
 
 def make_cuda(tensor):
@@ -48,7 +48,7 @@ def init_random_seed(manual_seed):
         seed = random.randint(1, 10000)
     else:
         seed = manual_seed
-    print("use random seed: {}".format(seed))
+    #print("use random seed: {}".format(seed))
     random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
@@ -57,10 +57,10 @@ def init_random_seed(manual_seed):
 
 def get_data_loader(name, train=True):
     """Get data loader by name."""
-    if name == "MNIST":
-        return get_mnist(train)
-    elif name == "USPS":
-        return get_usps(train)
+    if name == "chexpert":
+        return get_chexpert(train)
+    elif name == "NIH":
+        return get_nih(train)
 
 
 def init_model(net, restore):

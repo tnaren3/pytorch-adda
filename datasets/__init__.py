@@ -1,4 +1,4 @@
-from .mnist import get_mnist
-from .usps import get_usps
+from .chexpert import get_chexpert
+from .NIH import get_nih
 
-__all__ = (get_usps, get_mnist)
+__all__ = (get_nih, get_chexpert)

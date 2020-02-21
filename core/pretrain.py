@@ -88,14 +88,16 @@ def eval_src(encoder, classifier, data_loader):
     for (images, labels) in data_loader:
         images = make_variable(images, volatile=True)
         labels = make_variable(labels)
+        labels = labels.squeeze_()
 
         preds = classifier(encoder(images))
-        loss += criterion(preds, labels).data[0]
+        loss += criterion(preds, labels).data
 
         pred_cls = preds.data.max(1)[1]
         acc += pred_cls.eq(labels.data).cpu().sum()
 
     loss /= len(data_loader)
+    acc = acc.float()
     acc /= len(data_loader.dataset)
 
     print("Avg Loss = {}, Avg Accuracy = {:2%}".format(loss, acc))

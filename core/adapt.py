@@ -42,58 +42,58 @@ def train_tgt(src_encoder, tgt_encoder, critic,
             ###########################
             # 2.1 train discriminator #
             ###########################
-
+            #print("t1")
             # make images variable
             images_src = make_variable(images_src)
             images_tgt = make_variable(images_tgt)
-
+            #print("t2")
             # zero gradients for optimizer
             optimizer_critic.zero_grad()
-
+            #print("t3")
             # extract and concat features
             feat_src = src_encoder(images_src)
             feat_tgt = tgt_encoder(images_tgt)
             feat_concat = torch.cat((feat_src, feat_tgt), 0)
-
+            #print("t4")
             # predict on discriminator
             pred_concat = critic(feat_concat.detach())
-
+            #print("t5")
             # prepare real and fake label
             label_src = make_variable(torch.ones(feat_src.size(0)).long())
             label_tgt = make_variable(torch.zeros(feat_tgt.size(0)).long())
             label_concat = torch.cat((label_src, label_tgt), 0)
-
+            #print("t6")
             # compute loss for critic
             loss_critic = criterion(pred_concat, label_concat)
             loss_critic.backward()
-
+            #print("t7")
             # optimize critic
             optimizer_critic.step()
-
+            #print("t8")
             pred_cls = torch.squeeze(pred_concat.max(1)[1])
             acc = (pred_cls == label_concat).float().mean()
 
             ############################
             # 2.2 train target encoder #
             ############################
-
+            #print("t9")
             # zero gradients for optimizer
             optimizer_critic.zero_grad()
             optimizer_tgt.zero_grad()
-
+            #print("t10")
             # extract and target features
             feat_tgt = tgt_encoder(images_tgt)
-
+            #print("t11")
             # predict on discriminator
             pred_tgt = critic(feat_tgt)
-
+            #print("t12")
             # prepare fake labels
             label_tgt = make_variable(torch.ones(feat_tgt.size(0)).long())
-
+            #print("t13")
             # compute loss for target encoder
             loss_tgt = criterion(pred_tgt, label_tgt)
             loss_tgt.backward()
-
+            #print("t14")
             # optimize target encoder
             optimizer_tgt.step()
 

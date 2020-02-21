@@ -10,18 +10,26 @@ if __name__ == '__main__':
     init_random_seed(params.manual_seed)
 
     # load dataset
+    print("Loading Source Train Data")
     src_data_loader = get_data_loader(params.src_dataset)
+    print("Loading Source Test Data")
     src_data_loader_eval = get_data_loader(params.src_dataset, train=False)
+    print("Loading Target Train Data")
     tgt_data_loader = get_data_loader(params.tgt_dataset)
+    print("Loading Target Test Data")
     tgt_data_loader_eval = get_data_loader(params.tgt_dataset, train=False)
 
     # load models
+    print("Loading Source Encoder")
     src_encoder = init_model(net=LeNetEncoder(),
                              restore=params.src_encoder_restore)
+    print("Loading Source Classifier")
     src_classifier = init_model(net=LeNetClassifier(),
                                 restore=params.src_classifier_restore)
+    print("Loading Target Encoder")
     tgt_encoder = init_model(net=LeNetEncoder(),
                              restore=params.tgt_encoder_restore)
+    print("Loading Discriminator")
     critic = init_model(Discriminator(input_dims=params.d_input_dims,
                                       hidden_dims=params.d_hidden_dims,
                                       output_dims=params.d_output_dims),
@@ -54,6 +62,8 @@ if __name__ == '__main__':
     if not tgt_encoder.restored:
         tgt_encoder.load_state_dict(src_encoder.state_dict())
 
+    #print("test")
+    
     if not (tgt_encoder.restored and critic.restored and
             params.tgt_model_trained):
         tgt_encoder = train_tgt(src_encoder, tgt_encoder, critic,

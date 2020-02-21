@@ -1,22 +1,22 @@
 """Params for ADDA."""
 
 # params for dataset and data loader
-data_root = "data"
+data_root = "data/xray"
 dataset_mean_value = 0.5
 dataset_std_value = 0.5
-dataset_mean = (dataset_mean_value, dataset_mean_value, dataset_mean_value)
-dataset_std = (dataset_std_value, dataset_std_value, dataset_std_value)
-batch_size = 50
-image_size = 64
+dataset_mean = (dataset_mean_value,)
+dataset_std = (dataset_std_value,)
+batch_size = 8
+image_size = 224
 
 # params for source dataset
-src_dataset = "MNIST"
+src_dataset = "chexpert"
 src_encoder_restore = "snapshots/ADDA-source-encoder-final.pt"
 src_classifier_restore = "snapshots/ADDA-source-classifier-final.pt"
 src_model_trained = True
 
 # params for target dataset
-tgt_dataset = "USPS"
+tgt_dataset = "NIH"
 tgt_encoder_restore = "snapshots/ADDA-target-encoder-final.pt"
 tgt_model_trained = True
 
@@ -28,7 +28,7 @@ d_output_dims = 2
 d_model_restore = "snapshots/ADDA-critic-final.pt"
 
 # params for training network
-num_gpu = 1
+num_gpu = 2
 num_epochs_pre = 100
 log_step_pre = 20
 eval_step_pre = 20
