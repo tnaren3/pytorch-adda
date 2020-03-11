@@ -53,45 +53,30 @@ class Chexpert(data.Dataset):
 
     def load_samples(self):
         """Load sample images from dataset."""
+        numtr = 50000
+        numvl = 20000
         data_root = os.path.join(self.root, 'CheXpert-v1.0-small')
         train_info = csv.reader(open(os.path.join(data_root, 'trainer.csv'), 'r'))
         valid_info = csv.reader(open(os.path.join(data_root, 'valider.csv'), 'r'))
         images = []
         labels = []
-        counter = 0
         if self.train:
-            for row in train_info:
-                filename = os.path.join(self.root, row[0])
-                img = Image.open(filename)
-                image = np.array(img)
-                #image = np.array([[[s,s,s] for s in r] for r in image])
-                #print(image.shape)
-                #print(image)
-                label = row[1]
-                images.append(image)
-                labels.append(label)
-                counter += 1
-                if counter == 20:
+            for count, row in enumerate(train_info):
+                if count == numtr:
                     break
-            images = np.asarray(images)
-            labels = np.asarray(labels)
-            self.dataset_size = labels.shape[0]
+                image = np.array(Image.open(os.path.join(self.root, row[0])))
+                images.append(image)
+                labels.append(row[1])
         else:
-            for row in valid_info:
-                filename = os.path.join(self.root, row[0])
-                img = Image.open(filename)
-                image = np.array(img)
-                #image = np.array([[[s,s,s] for s in r] for r in image])
-                #print(image.shape)
-                label = row[1]
-                images.append(image)
-                labels.append(label)
-                counter += 1
-                if counter == 10:
+            for count, row in enumerate(valid_info):
+                if count == numvl:
                     break
-            images = np.asarray(images)
-            labels = np.asarray(labels)
-            self.dataset_size = labels.shape[0]
+                image = np.array(Image.open(os.path.join(self.root, row[0])))
+                images.append(image)
+                labels.append(row[1])
+        images = np.asarray(images)
+        labels = np.asarray(labels)
+        self.dataset_size = labels.shape[0]
         return images, labels
 
 

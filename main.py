@@ -11,13 +11,14 @@ if __name__ == '__main__':
 
     # load dataset
     print("Loading Source Train Data")
-    src_data_loader = get_data_loader(params.src_dataset)
+    #src_data_loader = get_data_loader(params.src_dataset)
     print("Loading Source Test Data")
-    src_data_loader_eval = get_data_loader(params.src_dataset, train=False)
+    #src_data_loader_eval = get_data_loader(params.src_dataset, train=False)
     print("Loading Target Train Data")
-    tgt_data_loader = get_data_loader(params.tgt_dataset)
+    #tgt_data_loader = get_data_loader(params.tgt_dataset)
     print("Loading Target Test Data")
     tgt_data_loader_eval = get_data_loader(params.tgt_dataset, train=False)
+    #print(tgt_data_loader_eval.dataset.dataset_size)
 
     # load models
     print("Loading Source Encoder")
@@ -33,14 +34,17 @@ if __name__ == '__main__':
     critic = init_model(Discriminator(input_dims=params.d_input_dims,
                                       hidden_dims=params.d_hidden_dims,
                                       output_dims=params.d_output_dims),
-                        restore=params.d_model_restore)
+                                      restore=params.d_model_restore)
 
     # train source model
     print("=== Training classifier for source domain ===")
     print(">>> Source Encoder <<<")
-    print(src_encoder)
+    #print(src_encoder)
     print(">>> Source Classifier <<<")
-    print(src_classifier)
+    #print(src_classifier)
+
+    #print(src_encoder.restored and src_classifier.restored and
+            #params.src_model_trained)
 
     if not (src_encoder.restored and src_classifier.restored and
             params.src_model_trained):
@@ -49,21 +53,26 @@ if __name__ == '__main__':
 
     # eval source model
     print("=== Evaluating classifier for source domain ===")
-    eval_src(src_encoder, src_classifier, src_data_loader_eval)
+    #eval_src(src_encoder, src_classifier, src_data_loader_eval)
 
     # train target encoder by GAN
     print("=== Training encoder for target domain ===")
     print(">>> Target Encoder <<<")
-    print(tgt_encoder)
+    #print(tgt_encoder)
     print(">>> Critic <<<")
-    print(critic)
+    #print(critic)
 
     # init weights of target encoder with those of source encoder
+
+    #print(tgt_encoder.restored)
+
     if not tgt_encoder.restored:
         tgt_encoder.load_state_dict(src_encoder.state_dict())
 
-    #print("test")
-    
+    #print("Training target")
+    #print(tgt_encoder.restored and critic.restored and
+            #params.tgt_model_trained)
+
     if not (tgt_encoder.restored and critic.restored and
             params.tgt_model_trained):
         tgt_encoder = train_tgt(src_encoder, tgt_encoder, critic,

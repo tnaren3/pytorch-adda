@@ -1,0 +1,24 @@
+Loading Source Train Data
+Loading Source Test Data
+Loading Target Train Data
+Loading Target Test Data
+Loading Source Encoder
+Restore model from: /datadrive2/tnaren/pytorch-adda/snapshots/ADDA-source-encoder-final.pt
+Loading Source Classifier
+Restore model from: /datadrive2/tnaren/pytorch-adda/snapshots/ADDA-source-classifier-final.pt
+Loading Target Encoder
+Restore model from: /datadrive2/tnaren/pytorch-adda/snapshots/ADDA-target-encoder-final.pt
+Loading Discriminator
+Restore model from: /datadrive2/tnaren/pytorch-adda/snapshots/ADDA-critic-final.pt
+=== Training classifier for source domain ===
+>>> Source Encoder <<<
+>>> Source Classifier <<<
+=== Evaluating classifier for source domain ===
+=== Training encoder for target domain ===
+>>> Target Encoder <<<
+>>> Critic <<<
+=== Evaluating classifier for encoded target domain ===
+>>> source only <<<
+Avg Loss = 13.827059745788574, Avg Accuracy = 20.632023%, F1 score = 0.19028514113769882, AUC score = 0.38848555020393355
+>>> domain adaption <<<
+Avg Loss = 23.551464080810547, Avg Accuracy = 14.957865%, F1 score = 0.044802019245937845, AUC score = 0.4940392831310938

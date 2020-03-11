@@ -13,7 +13,7 @@ def train_src(encoder, classifier, data_loader):
     # 1. setup network #
     ####################
 
-    # set train state for Dropout and BN layers
+    #print("setting train state for Dropout and BN layers")
     encoder.train()
     classifier.train()
 
@@ -52,7 +52,7 @@ def train_src(encoder, classifier, data_loader):
                               params.num_epochs_pre,
                               step + 1,
                               len(data_loader),
-                              loss.data[0]))
+                              loss.data))
 
         # eval model on test set
         if ((epoch + 1) % params.eval_step_pre == 0):

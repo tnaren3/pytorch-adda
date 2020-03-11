@@ -17,7 +17,7 @@ def train_tgt(src_encoder, tgt_encoder, critic,
     # 1. setup network #
     ####################
 
-    # set train state for Dropout and BN layers
+    #print("setting train state for Dropout and BN layers")
     tgt_encoder.train()
     critic.train()
 
@@ -36,6 +36,7 @@ def train_tgt(src_encoder, tgt_encoder, critic,
     ####################
 
     for epoch in range(params.num_epochs):
+        #print(epoch)
         # zip source and target data pair
         data_zip = enumerate(zip(src_data_loader, tgt_data_loader))
         for step, ((images_src, _), (images_tgt, _)) in data_zip:
@@ -71,6 +72,8 @@ def train_tgt(src_encoder, tgt_encoder, critic,
             optimizer_critic.step()
             #print("t8")
             pred_cls = torch.squeeze(pred_concat.max(1)[1])
+            #print(pred_cls)
+            #print(label_concat)
             acc = (pred_cls == label_concat).float().mean()
 
             ############################
@@ -107,9 +110,9 @@ def train_tgt(src_encoder, tgt_encoder, critic,
                               params.num_epochs,
                               step + 1,
                               len_data_loader,
-                              loss_critic.data[0],
-                              loss_tgt.data[0],
-                              acc.data[0]))
+                              loss_critic.data,
+                              loss_tgt.data,
+                              acc.data))
 
         #############################
         # 2.4 save model parameters #
