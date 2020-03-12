@@ -106,3 +106,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+workspace.code-workspace
+effusion.txt
+.gitignore

@@ -53,11 +53,11 @@ class Chexpert(data.Dataset):
 
     def load_samples(self):
         """Load sample images from dataset."""
-        numtr = 50000
-        numvl = 20000
+        numtr = 14000
+        numts = 6000
         data_root = os.path.join(self.root, 'CheXpert-v1.0-small')
-        train_info = csv.reader(open(os.path.join(data_root, 'trainer.csv'), 'r'))
-        valid_info = csv.reader(open(os.path.join(data_root, 'valider.csv'), 'r'))
+        train_info = csv.reader(open(os.path.join(data_root, 'effusion-train-split.csv'), 'r'))
+        test_info = csv.reader(open(os.path.join(data_root, 'effusion-test-split.csv'), 'r'))
         images = []
         labels = []
         if self.train:
@@ -68,8 +68,8 @@ class Chexpert(data.Dataset):
                 images.append(image)
                 labels.append(row[1])
         else:
-            for count, row in enumerate(valid_info):
-                if count == numvl:
+            for count, row in enumerate(test_info):
+                if count == numts:
                     break
                 image = np.array(Image.open(os.path.join(self.root, row[0])))
                 images.append(image)

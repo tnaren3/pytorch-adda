@@ -11,13 +11,14 @@ if __name__ == '__main__':
 
     # load dataset
     print("Loading Source Train Data")
-    #src_data_loader = get_data_loader(params.src_dataset)
+    src_data_loader = get_data_loader(params.src_dataset)
     print("Loading Source Test Data")
-    #src_data_loader_eval = get_data_loader(params.src_dataset, train=False)
+    src_data_loader_eval = get_data_loader(params.src_dataset, train=False)
     print("Loading Target Train Data")
-    #tgt_data_loader = get_data_loader(params.tgt_dataset)
+    tgt_data_loader = get_data_loader(params.tgt_dataset)
     print("Loading Target Test Data")
     tgt_data_loader_eval = get_data_loader(params.tgt_dataset, train=False)
+    
     #print(tgt_data_loader_eval.dataset.dataset_size)
 
     # load models
@@ -39,9 +40,9 @@ if __name__ == '__main__':
     # train source model
     print("=== Training classifier for source domain ===")
     print(">>> Source Encoder <<<")
-    #print(src_encoder)
+    print(src_encoder)
     print(">>> Source Classifier <<<")
-    #print(src_classifier)
+    print(src_classifier)
 
     #print(src_encoder.restored and src_classifier.restored and
             #params.src_model_trained)
@@ -53,14 +54,14 @@ if __name__ == '__main__':
 
     # eval source model
     print("=== Evaluating classifier for source domain ===")
-    #eval_src(src_encoder, src_classifier, src_data_loader_eval)
+    eval_src(src_encoder, src_classifier, src_data_loader_eval)
 
     # train target encoder by GAN
     print("=== Training encoder for target domain ===")
     print(">>> Target Encoder <<<")
-    #print(tgt_encoder)
+    print(tgt_encoder)
     print(">>> Critic <<<")
-    #print(critic)
+    print(critic)
 
     # init weights of target encoder with those of source encoder
 
@@ -80,7 +81,7 @@ if __name__ == '__main__':
 
     # eval target encoder on test set of target dataset
     print("=== Evaluating classifier for encoded target domain ===")
-    print(">>> source only <<<")
+    print(">>> source only (source encoder and classifier, target dataset) <<<")
     eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
-    print(">>> domain adaption <<<")
+    print(">>> domain adaption (target encoder and source classifier, target dataset) <<<")
     eval_tgt(tgt_encoder, src_classifier, tgt_data_loader_eval)

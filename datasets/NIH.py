@@ -53,11 +53,11 @@ class NIH(data.Dataset):
 
     def load_samples(self):
         """Load sample images from dataset."""
-        numtr = 50000
-        numvl = 20000
+        numtr = 14000
+        numts = 6000
         data_root = os.path.join(self.root, 'NIH')
-        train_info = csv.reader(open(os.path.join(data_root, 'trainer.csv'), 'r'))
-        valid_info = csv.reader(open(os.path.join(data_root, 'valider.csv'), 'r'))
+        train_info = csv.reader(open(os.path.join(data_root, 'effusion-train-split.csv'), 'r'))
+        test_info = csv.reader(open(os.path.join(data_root, 'effusion-test-split.csv'), 'r'))
         path = os.path.join(data_root, 'images')
         images = []
         labels = []
@@ -69,8 +69,8 @@ class NIH(data.Dataset):
                 images.append(image)
                 labels.append(row[1])
         else:
-            for count, row in enumerate(valid_info):
-                if count == numvl:
+            for count, row in enumerate(test_info):
+                if count == numts:
                     break
                 image = np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((512, 512)))
                 images.append(image)
