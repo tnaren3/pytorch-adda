@@ -2,18 +2,19 @@
 
 import torch.nn as nn
 import torch.optim as optim
+from sklearn.metrics import f1_score, roc_auc_score
+import numpy as np
 
 import params
 from utils import make_variable, save_model
 
 
-def train_src(encoder, classifier, data_loader):
+def train_src(encoder, classifier, data_loader, val_loader):
     """Train classifier for source domain."""
     ####################
     # 1. setup network #
     ####################
 
-    #print("setting train state for Dropout and BN layers")
     encoder.train()
     classifier.train()
 
@@ -23,6 +24,8 @@ def train_src(encoder, classifier, data_loader):
         lr=params.c_learning_rate,
         betas=(params.beta1, params.beta2))
     criterion = nn.CrossEntropyLoss()
+
+    loss_arr = []
 
     ####################
     # 2. train network #
@@ -54,9 +57,17 @@ def train_src(encoder, classifier, data_loader):
                               len(data_loader),
                               loss.data))
 
-        # eval model on test set
+        # eval model on validation set
         if ((epoch + 1) % params.eval_step_pre == 0):
-            eval_src(encoder, classifier, data_loader)
+            print("Epoch [{}/{}]"
+                      .format(epoch + 1,
+                              params.num_epochs_pre), end=":")
+            loss = eval_src(encoder, classifier, val_loader)
+            loss_arr.append(loss)
+            if ((len(loss_arr) > 5) and (loss_arr[-1] > loss_arr[-2] 
+                and loss_arr[-2] > loss_arr[-3] and loss_arr[-3] > loss_arr[-4])):
+                break
+
 
         # save model parameters
         if ((epoch + 1) % params.save_step_pre == 0):
@@ -84,6 +95,10 @@ def eval_src(encoder, classifier, data_loader):
     # set loss function
     criterion = nn.CrossEntropyLoss()
 
+    predictions = []
+    pred_scores = []
+    ls = []
+
     # evaluate network
     for (images, labels) in data_loader:
         images = make_variable(images, volatile=True)
@@ -92,12 +107,26 @@ def eval_src(encoder, classifier, data_loader):
 
         preds = classifier(encoder(images))
         loss += criterion(preds, labels).data
+        ls.append(labels.data.cpu().numpy())
 
         pred_cls = preds.data.max(1)[1]
         acc += pred_cls.eq(labels.data).cpu().sum()
+        predictions.append(pred_cls.data.cpu().numpy())
+        pred_scores.append(preds.data.cpu().max(1)[0])
+
+
+    ls = np.concatenate(ls)
+    f1 = f1_score(ls, np.concatenate(predictions))
+    try:
+        auc = roc_auc_score(ls, np.concatenate(pred_scores), average='weighted')
+    except:
+        auc = 0
+        print("Only one label was reported.")
+
 
     loss /= len(data_loader)
     acc = acc.float()
     acc /= len(data_loader.dataset)
 
-    print("Avg Loss = {}, Avg Accuracy = {:2%}".format(loss, acc))
+    print("Avg Loss = {}, Avg Accuracy = {:2%}, F1 score = {}, AUC score = {}".format(loss, acc, f1, auc))
+    return loss

@@ -12,11 +12,12 @@ import params
 
 class NIH(data.Dataset):
 
-    def __init__(self, root, train=True, transform=None, download=False):
+    def __init__(self, root, train=True, val=False, transform=None):
         """Init NIH dataset."""
         # init params
         self.root = os.path.expanduser(root)
         self.train = train
+        self.val = val
         self.transform = transform
         self.dataset_size = None
 
@@ -28,8 +29,6 @@ class NIH(data.Dataset):
             np.random.shuffle(indices)
             self.train_data = self.train_data[indices[0:self.dataset_size]]
             self.train_labels = self.train_labels[indices[0:self.dataset_size]]
-        #self.train_data = self.train_data.transpose(
-            #(2, 0, 1))  # convert to HWC
         
 
     def __getitem__(self, index):
@@ -44,7 +43,6 @@ class NIH(data.Dataset):
         if self.transform is not None:
             img = self.transform(img)
         label = torch.LongTensor([np.int64(label).item()])
-        # label = torch.FloatTensor([label.item()])
         return img, label
 
     def __len__(self):
@@ -53,26 +51,35 @@ class NIH(data.Dataset):
 
     def load_samples(self):
         """Load sample images from dataset."""
-        numtr = 14000
+        numtr = 12600
         numts = 6000
+        numvl = 1400
         data_root = os.path.join(self.root, 'NIH')
-        train_info = csv.reader(open(os.path.join(data_root, 'effusion-train-split.csv'), 'r'))
-        test_info = csv.reader(open(os.path.join(data_root, 'effusion-test-split.csv'), 'r'))
         path = os.path.join(data_root, 'images')
         images = []
         labels = []
-        if self.train:
+        if self.val:
+            val_info = csv.reader(open(os.path.join(data_root, 'effusion-val-split.csv'), 'r'))
+            for count, row in enumerate(val_info):
+                if count == numvl:
+                    break
+                image = np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((224, 224)))
+                images.append(image)
+                labels.append(row[1])
+        elif self.train:
+            train_info = csv.reader(open(os.path.join(data_root, 'effusion-train-split.csv'), 'r'))
             for count, row in enumerate(train_info):
                 if count == numtr:
                     break
-                image = np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((512, 512)))
+                image = np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((224, 224)))
                 images.append(image)
                 labels.append(row[1])
-        else:
+        elif not self.val and not self.train:
+            test_info = csv.reader(open(os.path.join(data_root, 'effusion-test-split.csv'), 'r'))
             for count, row in enumerate(test_info):
                 if count == numts:
                     break
-                image = np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((512, 512)))
+                image = np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((224, 224)))
                 images.append(image)
                 labels.append(row[1])
         images = np.asarray(images)
@@ -81,12 +88,10 @@ class NIH(data.Dataset):
         return images, labels
 
 
-def get_nih(train):
+def get_nih(train, val):
     """Get nih dataset loader."""
     # image pre-processing
-    pre_process = transforms.Compose([transforms.ToPILImage(),
-                                      transforms.Resize((224, 224)),
-                                      transforms.ToTensor(),
+    pre_process = transforms.Compose([transforms.ToTensor(),
                                       #transforms.Normalize(
                                           #mean=params.dataset_mean,
                                           #std=params.dataset_std)])
@@ -95,8 +100,8 @@ def get_nih(train):
     # dataset and data loader
     nih_dataset = NIH(root=params.data_root,
                         train=train,
-                        transform=pre_process,
-                        download=True)
+                        val=val,
+                        transform=pre_process)
 
     nih_data_loader = torch.utils.data.DataLoader(
         dataset=nih_dataset,

@@ -55,12 +55,12 @@ def init_random_seed(manual_seed):
         torch.cuda.manual_seed_all(seed)
 
 
-def get_data_loader(name, train=True):
+def get_data_loader(name, train=True, val=False):
     """Get data loader by name."""
     if name == "chexpert":
-        return get_chexpert(train)
+        return get_chexpert(train, val)
     elif name == "NIH":
-        return get_nih(train)
+        return get_nih(train, val)
 
 
 def init_model(net, restore):

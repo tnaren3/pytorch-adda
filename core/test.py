@@ -43,11 +43,10 @@ def eval_tgt(encoder, classifier, data_loader):
         pred_scores.append(preds.data.cpu().max(1)[0])
 
     ls = np.concatenate(ls)
-    #print(ls)
     f1 = f1_score(ls, np.concatenate(predictions))
     try:
         auc = roc_auc_score(ls, np.concatenate(pred_scores), average='weighted')
-    except ValueError:
+    except:
         auc = 0
         print("Only one label was reported.")
 
@@ -56,3 +55,5 @@ def eval_tgt(encoder, classifier, data_loader):
     acc /= len(data_loader.dataset)
 
     print("Avg Loss = {}, Avg Accuracy = {:2%}, F1 score = {}, AUC score = {}".format(loss, acc, f1, auc))
+
+    return loss
