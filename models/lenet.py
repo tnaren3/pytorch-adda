@@ -14,15 +14,9 @@ class LeNetEncoder(nn.Module):
         self.restored = False
 
         self.encoder = nn.Sequential(
-            # 1st conv layer
-            # input [1 x 224 x 224]
-            # output [20 x 110 x 110]
             nn.Conv2d(1, 20, kernel_size=5),
             nn.MaxPool2d(kernel_size=2),
             nn.ReLU(),
-            # 2nd conv layer
-            # input [20 x 110 x 110]
-            # output [50 x 53 x 53]
             nn.Conv2d(20, 50, kernel_size=5),
             nn.Dropout2d(),
             nn.MaxPool2d(kernel_size=2),
