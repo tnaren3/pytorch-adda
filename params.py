@@ -6,7 +6,7 @@ dataset_mean_value = 0.5
 dataset_std_value = 0.5
 dataset_mean = (dataset_mean_value,)
 dataset_std = (dataset_std_value,)
-batch_size = 32
+batch_size = 16
 image_size = 224
 
 # params for source dataset
@@ -22,7 +22,7 @@ tgt_model_trained = True
 
 # params for setting up models
 model_root = "snapshots"
-d_input_dims = 500
+d_input_dims = 1000
 d_hidden_dims = 500
 d_output_dims = 2
 d_model_restore = "snapshots/ADDA-critic-final.pt"

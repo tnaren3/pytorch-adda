@@ -51,9 +51,9 @@ class Chexpert(data.Dataset):
 
     def load_samples(self):
         """Load sample images from dataset."""
-        numtr = 126
-        numts = 60
-        numvl = 14
+        numtr = 12600
+        numts = 6000
+        numvl = 1400
         data_root = os.path.join(self.root, 'CheXpert-v1.0-small')
         images = []
         labels = []

@@ -48,9 +48,9 @@ if __name__ == '__main__':
     # train source model
     print("=== Training classifier for source domain ===")
     print(">>> Source Encoder <<<")
-    print(src_encoder)
+    #print(src_encoder)
     print(">>> Source Classifier <<<")
-    print(src_classifier)
+    #print(src_classifier)
     print("--- Avg Accuracy is from evaluating on validation set ---")
 
     if not (src_encoder.restored and src_classifier.restored and
@@ -65,9 +65,9 @@ if __name__ == '__main__':
     # train target encoder by GAN
     print("=== Training encoder for target domain ===")
     print(">>> Target Encoder <<<")
-    print(tgt_encoder)
+    #print(tgt_encoder)
     print(">>> Critic <<<")
-    print(critic)
+    #print(critic)
 
     # init weights of target encoder with those of source encoder
 
