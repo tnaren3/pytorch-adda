@@ -23,7 +23,7 @@ def train_src(encoder, classifier, data_loader, val_loader):
         list(encoder.parameters()) + list(classifier.parameters()),
         lr=params.c_learning_rate,
         betas=(params.beta1, params.beta2))
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCELoss()
 
     loss_arr = []
 
@@ -50,7 +50,7 @@ def train_src(encoder, classifier, data_loader, val_loader):
 
             # print step info
             if ((step + 1) % params.log_step_pre == 0):
-                print("Epoch [{}/{}] Step [{}/{}]: loss={}"
+                print("Epoch[{}/{}] Step[{}/{}]: loss= {}"
                       .format(epoch + 1,
                               params.num_epochs_pre,
                               step + 1,
@@ -59,14 +59,16 @@ def train_src(encoder, classifier, data_loader, val_loader):
 
         # eval model on validation set
         if ((epoch + 1) % params.eval_step_pre == 0):
-            print("Epoch [{}/{}]"
+            print("Epoch[{}/{}]"
                       .format(epoch + 1,
                               params.num_epochs_pre), end=":")
             loss = eval_src(encoder, classifier, val_loader)
             loss_arr.append(loss)
-            if ((len(loss_arr) > 5) and (loss_arr[-1] > loss_arr[-2] 
-                and loss_arr[-2] > loss_arr[-3] and loss_arr[-3] > loss_arr[-4])):
-                break
+            encoder.train()
+            classifier.train()
+            #if ((len(loss_arr) > 5) and (loss_arr[-1] > loss_arr[-2] 
+                #and loss_arr[-2] > loss_arr[-3] and loss_arr[-3] > loss_arr[-4])):
+                #break
 
 
         # save model parameters
@@ -93,7 +95,7 @@ def eval_src(encoder, classifier, data_loader):
     acc = 0
 
     # set loss function
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCELoss()
 
     predictions = []
     pred_scores = []
@@ -116,11 +118,12 @@ def eval_src(encoder, classifier, data_loader):
 
 
     ls = np.concatenate(ls)
+    z = np.concatenate(pred_scores)
     f1 = f1_score(ls, np.concatenate(predictions))
     try:
-        auc = roc_auc_score(ls, np.concatenate(pred_scores), average='weighted')
+        auc = roc_auc_score(ls, z, average='weighted')
+        unauc = roc_auc_score(ls, z)
     except:
-        auc = 0
         print("Only one label was reported.")
 
 
@@ -128,5 +131,5 @@ def eval_src(encoder, classifier, data_loader):
     acc = acc.float()
     acc /= len(data_loader.dataset)
 
-    print("Avg Loss = {}, Avg Accuracy = {:2%}, F1 score = {}, AUC score = {}".format(loss, acc, f1, auc))
+    print("AvgLoss= {} AvgAcc= {:2%} F1= {} AUC= {} UnweightedAUC= {}".format(loss, acc, f1, auc, unauc))
     return loss

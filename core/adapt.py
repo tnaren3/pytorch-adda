@@ -21,7 +21,7 @@ def train_tgt(src_encoder, tgt_encoder, critic, src_classifier,
     critic.train()
 
     # setup criterion and optimizer
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCELoss()
     optimizer_tgt = optim.Adam(tgt_encoder.parameters(),
                                lr=params.c_learning_rate,
                                betas=(params.beta1, params.beta2))
@@ -103,8 +103,8 @@ def train_tgt(src_encoder, tgt_encoder, critic, src_classifier,
             # 2.3 print step info #
             #######################
             if ((step + 1) % params.log_step == 0):
-                print("Epoch [{}/{}] Step [{}/{}]:"
-                      "d_loss={:.5f} g_loss={:.5f} acc={:.5f}"
+                print("Epoch[{}/{}] Step[{}/{}]: "
+                      "d_loss= {:.5f} g_loss= {:.5f} acc= {:.5f}"
                       .format(epoch + 1,
                               params.num_epochs,
                               step + 1,
@@ -124,9 +124,11 @@ def train_tgt(src_encoder, tgt_encoder, critic, src_classifier,
                               params.num_epochs), end=":")
             loss = eval_tgt(tgt_encoder, src_classifier, val_loader)
             loss_arr.append(loss)
-            if ((len(loss_arr) > 5) and (loss_arr[-1] > loss_arr[-2] 
-                and loss_arr[-2] > loss_arr[-3] and loss_arr[-3] > loss_arr[-4])):
-                break
+            tgt_encoder.train()
+            critic.train()
+            #if ((len(loss_arr) > 5) and (loss_arr[-1] > loss_arr[-2] 
+                #and loss_arr[-2] > loss_arr[-3] and loss_arr[-3] > loss_arr[-4])):
+                #break
 
         if ((epoch + 1) % params.save_step == 0):
             torch.save(critic.state_dict(), os.path.join(

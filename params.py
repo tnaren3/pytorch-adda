@@ -6,7 +6,7 @@ dataset_mean_value = 0.5
 dataset_std_value = 0.5
 dataset_mean = (dataset_mean_value,)
 dataset_std = (dataset_std_value,)
-batch_size = 16
+batch_size = 32
 image_size = 224
 
 # params for source dataset
@@ -22,27 +22,28 @@ tgt_model_trained = True
 
 # params for setting up models
 model_root = "snapshots"
-d_input_dims = 1000
+d_input_dims = 2
 d_hidden_dims = 500
 d_output_dims = 2
 d_model_restore = "snapshots/ADDA-critic-final.pt"
 
 # params for training network
 num_gpu = 1
-num_epochs_pre = 100
+num_epochs_pre = 30
 # num of steps to output log
-log_step_pre = 100 
+log_step_pre = 1000000
 # num of epochs to evaluate at
-eval_step_pre = 5 
+eval_step_pre = 1 
 # num of epochs to save model
-save_step_pre = 20
-num_epochs = 200
+save_step_pre = 5
+
+num_epochs = 50
 # num of steps to output log
-log_step = 100
+log_step = 1000000
 # num of epochs to save model
-save_step = 20
+save_step = 5
 # num of epochs to evaluate at
-eval_step = 10
+eval_step = 1
 manual_seed = None
 
 # params for optimizing models

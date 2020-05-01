@@ -42,7 +42,8 @@ class NIH(data.Dataset):
         img, label = self.train_data[index], self.train_labels[index]
         if self.transform is not None:
             img = self.transform(img)
-        label = torch.LongTensor([np.int64(label).item()])
+        label = torch.FloatTensor([np.int64(label[0]).item(), np.int64(label[1]).item(), np.int64(label[2]).item(), 
+                    np.int64(label[3]).item(), np.int64(label[4]).item()])
         return img, label
 
     def __len__(self):
@@ -51,37 +52,40 @@ class NIH(data.Dataset):
 
     def load_samples(self):
         """Load sample images from dataset."""
-        numtr = 12600
-        numts = 6000
-        numvl = 1400
+        numtr = 126
+        numts = 60
+        numvl = 14
         data_root = os.path.join(self.root, 'NIH')
         path = os.path.join(data_root, 'images')
         images = []
         labels = []
         if self.val:
-            val_info = csv.reader(open(os.path.join(data_root, 'effusion-val-split.csv'), 'r'))
+            val_info = csv.reader(open(os.path.join(data_root, 'multi-val-split.csv'), 'r'))
             for count, row in enumerate(val_info):
                 if count == numvl:
                     break
                 image = np.repeat(np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((224, 224)))[..., np.newaxis], 3, -1)
                 images.append(image)
-                labels.append(row[1])
+                #labels.append(row[1])
+                labels.append(np.array([row[1], row[2], row[3], row[4], row[5]]))
         elif self.train:
-            train_info = csv.reader(open(os.path.join(data_root, 'effusion-train-split.csv'), 'r'))
+            train_info = csv.reader(open(os.path.join(data_root, 'multi-train-split.csv'), 'r'))
             for count, row in enumerate(train_info):
                 if count == numtr:
                     break
                 image = np.repeat(np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((224, 224)))[..., np.newaxis], 3, -1)
                 images.append(image)
-                labels.append(row[1])
+                #labels.append(row[1])
+                labels.append(np.array([row[1], row[2], row[3], row[4], row[5]]))
         elif not self.val and not self.train:
-            test_info = csv.reader(open(os.path.join(data_root, 'effusion-test-split.csv'), 'r'))
+            test_info = csv.reader(open(os.path.join(data_root, 'multi-test-split.csv'), 'r'))
             for count, row in enumerate(test_info):
                 if count == numts:
                     break
                 image = np.repeat(np.array(Image.open(os.path.join(path, row[0])).convert('L').resize((224, 224)))[..., np.newaxis], 3, -1)
                 images.append(image)
-                labels.append(row[1])
+                #labels.append(row[1])
+                labels.append(np.array([row[1], row[2], row[3], row[4], row[5]]))
         images = np.asarray(images)
         labels = np.asarray(labels)
         self.dataset_size = labels.shape[0]
@@ -106,6 +110,7 @@ def get_nih(train, val):
     nih_data_loader = torch.utils.data.DataLoader(
         dataset=nih_dataset,
         batch_size=params.batch_size,
-        shuffle=True)
+        shuffle=True,
+        drop_last = True)
 
     return nih_data_loader

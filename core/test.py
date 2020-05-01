@@ -19,7 +19,7 @@ def eval_tgt(encoder, classifier, data_loader):
     acc = 0.0
 
     # set loss function
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCELoss()
     predictions = []
     pred_scores = []
     ls = []
@@ -43,9 +43,11 @@ def eval_tgt(encoder, classifier, data_loader):
         pred_scores.append(preds.data.cpu().max(1)[0])
 
     ls = np.concatenate(ls)
+    z = np.concatenate(pred_scores)
     f1 = f1_score(ls, np.concatenate(predictions))
     try:
-        auc = roc_auc_score(ls, np.concatenate(pred_scores), average='weighted')
+        auc = roc_auc_score(ls, z, average='weighted')
+        unauc = roc_auc_score(ls, z)
     except:
         auc = 0
         print("Only one label was reported.")
@@ -54,6 +56,6 @@ def eval_tgt(encoder, classifier, data_loader):
     acc = acc.float()
     acc /= len(data_loader.dataset)
 
-    print("Avg Loss = {}, Avg Accuracy = {:2%}, F1 score = {}, AUC score = {}".format(loss, acc, f1, auc))
+    print("AvgLoss= {} AvgAcc= {:2%} F1= {} AUC= {} UnweightedAUC= {}".format(loss, acc, f1, auc, unauc))
 
     return loss

@@ -18,7 +18,7 @@ class Discriminator(nn.Module):
             nn.Linear(hidden_dims, hidden_dims),
             nn.ReLU(),
             nn.Linear(hidden_dims, output_dims),
-            nn.LogSoftmax(dim=1)
+            nn.Sigmoid()
         )
 
     def forward(self, input):

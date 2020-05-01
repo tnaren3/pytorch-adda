@@ -2,7 +2,7 @@
 
 import params
 from core import eval_src, eval_tgt, train_src, train_tgt
-from models import Discriminator, Classifier, Encoder, Bottleneck
+from models import Discriminator, Classifier, resnet18
 from utils import get_data_loader, init_model, init_random_seed
 
 if __name__ == '__main__':
@@ -31,13 +31,13 @@ if __name__ == '__main__':
     
     # load models
     print("Loading Source Encoder")
-    src_encoder = init_model(net=Encoder(Bottleneck, [3, 4, 6, 3]),
+    src_encoder = init_model(net=resnet18(),
                              restore=params.src_encoder_restore)
     print("Loading Source Classifier")
     src_classifier = init_model(net=Classifier(),
                                 restore=params.src_classifier_restore)
     print("Loading Target Encoder")
-    tgt_encoder = init_model(net=Encoder(Bottleneck, [3, 4, 6, 3]),
+    tgt_encoder = init_model(net=resnet18(),
                              restore=params.tgt_encoder_restore)
     print("Loading Discriminator")
     critic = init_model(Discriminator(input_dims=params.d_input_dims,
