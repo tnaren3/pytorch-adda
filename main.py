@@ -5,6 +5,7 @@ from core import eval_src, eval_tgt, train_src, train_tgt
 from models import Discriminator, Classifier, resnet18
 from utils import get_data_loader, init_model, init_random_seed
 
+
 if __name__ == '__main__':
     # init random seed
     init_random_seed(params.manual_seed)

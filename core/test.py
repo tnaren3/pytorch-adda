@@ -8,6 +8,7 @@ import numpy as np
 from utils import make_variable
 
 
+
 def eval_tgt(encoder, classifier, data_loader):
     """Evaluation for target encoder by source classifier on target dataset."""
     #print("setting eval state for Dropout and BN layers")

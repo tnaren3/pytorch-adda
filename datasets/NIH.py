@@ -10,6 +10,7 @@ from torchvision import datasets, transforms
 import params
 
 
+
 class NIH(data.Dataset):
 
     def __init__(self, root, train=True, val=False, transform=None):

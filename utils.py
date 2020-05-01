@@ -11,6 +11,7 @@ import params
 from datasets import get_chexpert, get_nih
 
 
+
 def make_variable(tensor, volatile=False):
     """Convert Tensor to Variable."""
     if torch.cuda.is_available():
